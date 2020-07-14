@@ -71,10 +71,18 @@ class BaseTrainer:
         #   2. Remember to check the shape of action and log prob.
         #   3. When deterministic is True, return the action with maximum
         #    probability
+
         actions = None
         action_log_probs = None
-        pass
-
+        dist = Categorical(logits=logits)
+        if deterministic == True:
+            actions = torch.argmax(logits,dim=-1)
+        else:
+            actions = dist.sample()
+        action_log_probs = dist.log_prob(actions)
+        assert actions.shape[0] == obs.shape[0]
+        assert action_log_probs.shape[0] == obs.shape[0]
+		#pass
         return values.view(-1, 1), actions.view(-1, 1), action_log_probs.view(
             -1, 1)
 
@@ -87,7 +95,10 @@ class BaseTrainer:
         # Hint: Use proper distribution to help you
         action_log_probs = None
         dist_entropy = None
-        pass
+        #pass
+        dist = Categorical(logits=logits)
+        action_log_probs= dist.log_prob(act.view(-1))
+        dist_entropy = dist.entropy().mean()
 
         assert dist_entropy.shape == ()
         return values.view(-1, 1), action_log_probs.view(-1, 1), dist_entropy

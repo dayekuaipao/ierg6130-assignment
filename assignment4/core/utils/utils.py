@@ -54,12 +54,15 @@ def step_envs(cpu_actions, envs, episode_rewards, frame_stack_tensor,
     #  environments) with masks, in order to refresh the reward accumulating
     #  when some episodes is terminated.
     # Hint: Pay attention to the shape of `masks` and `episode_rewards`
-    pass
+    
+    #pass
+    episode_rewards *= masks.reshape((-1,1))
 
     assert episode_rewards.shape == episode_rewards_old_shape
 
     total_steps += obs[0].shape[0] if isinstance(obs, tuple) else obs.shape[0]
     masks = torch.from_numpy(masks).to(device).view(-1, 1)
+
     # frame_stack_tensor is refreshed in-place if done happen.
     if test:
         frame_stack_masks = masks.view(-1, 1)

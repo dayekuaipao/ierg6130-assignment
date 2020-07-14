@@ -165,8 +165,10 @@ def train(args):
                 #   3. What observation is needed for trainer.compute_action?
                 values = None
                 actions = None
-                action_log_prob = None
-                pass
+                action_log_probs = None
+                with torch.no_grad():
+                    values,actions,action_log_probs = trainer.compute_action(trainer.rollouts.observations[index])
+                #pass
 
                 cpu_actions = actions.view(-1).cpu().numpy()
 
@@ -184,7 +186,7 @@ def train(args):
                 # Store samples
                 trainer.rollouts.insert(
                     frame_stack_tensor.get(), actions.view(-1, 1),
-                    action_log_prob, values, rewards, masks)
+                    action_log_probs, values, rewards, masks)
 
         # ===== Process Samples =====
         with process_timer:
@@ -267,7 +269,9 @@ def train(args):
             ))
 
         # [TODO] Stop training when total_steps is greater than args.max_steps
-        pass
+        if iteration > args.max_steps:
+            break
+        #pass
 
         iteration += 1
 

@@ -100,7 +100,7 @@ if __name__ == '__main__':
     assert args.right in agent_names, agent_names
 
     env = make_envs(
-        "CompetitivePongDouble-v0", num_envs=1, asynchronous=False).envs[0]
+        "cPongDouble-v0", num_envs=1, asynchronous=False).envs[0]
 
     if args.left != "MY_AGENT":
         left = get_compute_action_function(args.left)
